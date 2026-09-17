@@ -30,36 +30,35 @@ def check_answers(questions):
         # Check the answer
         answered += 1
         if choice == item['answer']:
-            print("Correct!\n")
+            print("✅ Correct!\n")
             score += 1
         else:
-            print(f"Wrong! The correct answer was {item['answer']}")
+            print(f"❌ Wrong! The correct answer was {item['answer']}\n")
 
     return score, answered
 
 
 def display_final_score(score, answered, total_questions):
     if answered == 0:
-        print("\nYou didn't answer any questions.\n")
+        print("\n😔 You didn't answer any questions.\n")
         return
 
     percentage = (score / answered) * 100
 
     if answered < total_questions:
-        print("\nQuiz Exited Early!\n")
-        print(f"You answered {answered}/{total_questions} questions.")
+        print(f"🤔 You answered {answered}/{total_questions} questions.")
     else:
-        print("\nQuiz Complete!\n")
+        print("\n😄 Quiz Complete!\n")
 
     print(f"Your score: {score}/{answered}")
     print(f"Percentage: {percentage:.1f}%\n")
 
     if percentage == 100:
-        print("Perfect! You are a true Python master!\n")
+        print("💯 Perfect! You are a true Python master!\n")
     elif percentage >= 70:
-        print("Good, you know your stuff!\n")
+        print("👍 Good, you know your stuff!\n")
     else:
-        print("Keep Practicing!\n")
+        print("🚶🏻 Keep Practicing!\n")
 
 
 def load_json():
