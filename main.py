@@ -1,78 +1,39 @@
 import json
 import random
-import time
-import sys
-import select
 
 
 def check_answers(questions):
     score = 0
     answered = 0
-    time_limit = 15
 
     for number, item in enumerate(questions, 1):
-        print(f"\nQuestion {number}: \n{item['question']}")
-
-        for option in item["options"]:
+        print(f"Question {number}: {item['question']}")
+        for option in item['options']:
             print(option)
 
-        start_time = time.time()
-        last_remaining = -1  # Tracks changes in seconds to reduce flickering
-
         while True:
-            elapsed_time = time.time() - start_time
-            remaining_time = max(0, int(time_limit - elapsed_time))
+            # Check user input
+            prompt = "Choose an option (a, b, c, d or q to Quit): "
+            choice = input(prompt).strip().upper()
 
-            # Update the visual countdown timer only when the second changes
-            if remaining_time != last_remaining:
-                # \r resets the cursor to the start of the row to
-                # overwrite the line
-                # \033[K clears everything to the right of the cursor
+            if choice in ["Q", "QUIT"]:
                 print(
-                    "\r⏰ ["
-                    f"{remaining_time}s left] "
-                    "Choose an option "
-                    "(a, b, c, d or q to Quit): \033[K",
-                    end="",
-                    flush=True,
+                    "\nExiting the game early....Calculating your final "
+                    "score!"
                 )
-                last_remaining = remaining_time
+                return score, answered
 
-            if remaining_time <= 0:
-                print("\n\n⏰ Time's up!\n")
+            if choice in ["A", "B", "C", "D"]:
                 break
+            print("Invalid input. Please Choose A, B, C, or D.")
 
-            # Check for keyboard input without blocking the code execution
-            ready, _, _ = select.select([sys.stdin], [], [], 0.1)
-
-            if ready:
-                choice = sys.stdin.readline().strip().upper()
-
-                if choice in ["Q", "QUIT"]:
-                    print(
-                        "\nExiting the game early...."
-                        "Calculating your final score!"
-                    )
-                    return score, answered
-
-                if choice not in ["A", "B", "C", "D"]:
-                    print("\n❌ Invalid input. Please choose A, B, C, or D.")
-                    # Reset last_remaining so the prompt redraws immediately
-                    last_remaining = -1
-                    continue
-
-                answered += 1
-
-                if choice == item["answer"]:
-                    print("✅ Correct!\n")
-                    score += 1
-                else:
-                    print(
-                        f"❌ Wrong! The correct option was "
-                        f"{item['answer']}\n"
-                    )
-
-                break
+        # Check the answer
+        answered += 1
+        if choice == item['answer']:
+            print("✅ Correct!\n")
+            score += 1
+        else:
+            print(f"❌ Wrong! The correct answer was {item['answer']}\n")
 
     return score, answered
 
@@ -110,18 +71,17 @@ def load_json():
 
 
 def main():
-    questions = load_json()
-
-    if not questions:
-        print("No questions available. Exiting.")
-        return
-
-    line = "-" * 25
+    line = "=" * 25
     title = "WELCOME TO PYTHON TRIVIAS"
 
     print(line)
     print(title)
     print(line)
+
+    questions = load_json()
+    if not questions:
+        print("No questions available. Exiting.")
+        return
 
     random.shuffle(questions)
 
